@@ -1,0 +1,48 @@
+ https://start.spring.io/
+Project - Maven
+Language - Java
+Spring Boot - 3.4.4
+Project Metadata
+  Group - com.dsu.john
+  Artifact - student
+  Name - 
+  Description -
+  Package name - com.dsu.john.student
+Packaging - Jar
+Java - 17
+
+Dependencies
+  click Add Dependencies
+  enter Spring Web
+  select the first one.
+click Generate
+go to your downloads folder (open folder explorer, left hand side 'downloads' folder will be there).
+student zip file. right click. click 'Extract all ...'
+click 'browse' button. go to 'SpringBootProjects' folder under your name folder (created yesterday). 
+dont open the 'SpringBootProjects' folder. just select that folder. click 'Select Folder' button.
+click extract.
+'student' folder will be created under your 'SpringBootProjects' folder.
+
+Open Eclipse
+File -> Switch Workspace
+check your SpringBootProjects folder is selected. if not browse and select that folder.
+click 'Launch'
+
+File -> Open Projects from File System...
+click 'Directory' button.
+go to your 'SpringBootProjects' folder. dont open it.
+select 'student' folder. click select folder.
+click finish.
+
+expand src/main/java/
+com.dsu.john.student
+  StudentApplication.java - open by double click
+  type 
+    System.out.println("Hello Students");
+  next to SpringApplication.run(StudentApplication.class, args);
+save file.
+
+Run -> Run As -> Java Application
+
+
+
