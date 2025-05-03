@@ -425,7 +425,7 @@ Create Student Operation in Console
 Create Student Operation in REST
 	Open StudentRESTController.java
 		Add createNewStudent method
-		@PostMapping("createstudent")
+		@PostMapping("/createstudent")
 		public String createNewStudent(@RequestBody Student student) {
 			service.createStudent(student);
 			return "Success";
@@ -564,14 +564,14 @@ Open StudentRepository.java
 Update Student in REST
 	Open StudentRESTController.java
 		Add updateStudent method
-		@PostMapping("updatestudent")
+		@PutMapping("/updatestudent")
 		public String updateStudent(@RequestBody Student student) {
 			service.updateStudent(student);
 			return "Success";
 		}
 	Test Create Student operation in Postman application.
 		Open Postman Application
-		Operation: POST
+		Operation: PUT
 		URL: http://localhost:8080/rest/updatestudent
 		Request Body -> raw -> JSON
 			{
@@ -713,7 +713,7 @@ Delete Student Operation in Console
 Delete Student Operation in REST
 	Open StudentRESTController.java
 		Add deleteStudent method
-		@DeleteMapping("deletestudent/{rno}")
+		@DeleteMapping("/deletestudent/{rno}")
 		public void deleteStudent(@PathVariable("rno") Long rno) {
 			service.deleteStudent(rno);
 		}
@@ -775,5 +775,90 @@ Java class to Entity
 		@GeneratedValue(strategy=GenerationType.IDENTITY)
 		private Long rno;
 	Save and Run. Open the MySQL Workbench and check student table is created.
+
+Create StudentRepositoryDB interface and extend JpaRepository interface
+	Right click repositories package -> New -> Interface -> Name: StudentRepositoryDB -> Finish 
+	Annotate, extend and add a method getByRno.
+		@Repository
+		public interface StudentRepositoryDB extends JpaRepository<Student,Long> {
+			public Student getByRno(Long rno);
+		}
+	Import classes.
+		import org.springframework.data.jpa.repository.JpaRepository;
+		import org.springframework.stereotype.Repository;
+		import com.cca.john.student.models.Student;
+	Save it.
+
+Create StudentServiceDB class
+	Right click services package -> New -> Class -> Name: StudentServiceDB -> Finish 
+	Annotate and implement CRUD operations by calling repository methods.
+		@Service
+		public class StudentServiceDB {
+			@Autowired
+			private StudentRepositoryDB repo;
+			public List<Student> readAllStudents() {
+				return repo.findAll();
+			}
+			public void createStudent(Student student) {
+				repo.save(student);
+			}
+			public void updateStudent(Student student) {
+				repo.save(student);
+			}
+			public Student getStudentByRno(Long rno) {
+				return repo.getByRno(rno);
+			}
+			public void deleteStudent(Long rno) {
+				repo.deleteById(rno);
+			}
+		}
+	Import classes
+		import java.util.List;
+		import org.springframework.beans.factory.annotation.Autowired;
+		import org.springframework.stereotype.Service;
+		import com.cca.john.student.models.Student;
+		import com.cca.john.student.repositories.StudentRepositoryDB;
+	Save it.
+	
+Add GET, POST, PUT and DELETE mapping methods for DB.
+	Open StudentRestController.java
+	Create StudentServiceDB reference as private and annotate it inside the class.
+		@Autowired
+		private StudentServiceDB serviceDB;
+	Add the following methods.
+		@GetMapping("/db/studentlist")
+		public List<Student> studentListDB() {
+			return serviceDB.readAllStudents();
+		}
+		@PostMapping("/db/createstudent")
+		public String createStudentDB(@RequestBody Student student) {
+			serviceDB.createStudent(student);
+			return "Success";
+		}
+		@PutMapping("/db/updatestudent")
+		public String updateStudentDB(@RequestBody Student student) {
+			serviceDB.updateStudent(student);
+			return "Success";
+		}
+		@DeleteMapping("/db/deletestudent/{rno}")
+		public void deleteStudentDB(@PathVariable("rno") Long rno) {
+			serviceDB.deleteStudent(rno);
+		}
+	Save it.
+	
+	
+Test 4 Database REST services in Postman application.
+	Open Postman.
+	Test the GET, POST, PUT and DELETE request by using the following urls.
+		http://localhost:8080/rest/db/studentlist
+		http://localhost:8080/rest/db/createstudent
+		http://localhost:8080/rest/db/updatestudent 
+		http://localhost:8080/rest/db/deletestudent/3
+	Check the database table for all the updates using MySQL Workbench.
+
+
+
+
+
 
 
