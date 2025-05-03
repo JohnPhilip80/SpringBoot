@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Student Management System</title>
+	</head>
+	<body>
+		<h1 th:if="${isNew}">Create Student</h1>
+		<h1 th:if="${!isNew}">Update Student</h1>
+		<form method="post" th:object="${studentDto}">
+			<table width = 60%>
+				<tr>
+					<td>Roll No:</td>
+					<td> 
+						<input th:if="${!isDB}" th:readonly="${!isNew}" th:field="${studentDto.rno}">
+					</td>
+				</tr>
+				<tr>
+					<td>Name:</td>
+					<td> <input th:field="${studentDto.name}"></td>
+				</tr>
+				<tr>
+					<td>Course:</td>
+					<td> <input th:field="${studentDto.course}"></td>
+				</tr>
+				<tr>
+					<td>Percentage:</td>
+					<td> <input th:field="${studentDto.percentage}"></td>
+				</tr>
+				<tr>
+					<td><button type ="submit">Submit</button></td>
+					<td>
+						<a th:if="${!isDB}" th:href="@{/student/studentlist}">Cancel</a>
+						<a th:if="${isDB}" th:href="@{/student/db/studentlist}">Cancel</a>
+						<a th:href="@{/student/}">Home</a>
+					</td>
+				</tr>
+			</table>
+			
+		</form>
+
+	</body>
+</html>

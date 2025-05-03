@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Students</title>
+	</head>
+	<body>
+		<h1 th:if="${!isDB}">Student List (Local Storage)</h1>
+		<h1 th:if="${isDB}">Student List (Data Base)</h1>
+		<button onclick="location.href='/student/'">Home</button>
+		<button th:if="${!isDB}" onclick="location.href = '/student/createstudent'">Create Student</button>
+		<button th:if="${isDB}" onclick="location.href = '/student/db/createstudent'">Create Student</button>
+		<table border="2" width="80%">
+			<thead>
+				<tr>
+					<th>Roll No</th>
+					<th>Name</th>
+					<th>Course</th>
+					<th>Percentage</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="student : ${students}">
+					<td th:text="${student.rno}"></td>
+					<td th:text="${student.name}"></td>
+					<td th:text="${student.course}"></td>
+					<td th:text="${student.percentage}"></td>
+					<td>
+						<a th:if="${!isDB}" th:href="@{/student/updatestudent(rno=${student.rno})}">Update</a>
+						<a th:if="${isDB}" th:href="@{/student/db/updatestudent(rno=${student.rno})}">Update</a>
+						<a th:if="${!isDB}" th:href="@{/student/deletestudent(rno=${student.rno})}" onclick="return confirm('Are you sure?')">Delete</a>
+						<a th:if="${isDB}" th:href="@{/student/db/deletestudent(rno=${student.rno})}" onclick="return confirm('Are you sure?')">Delete</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+</html>
