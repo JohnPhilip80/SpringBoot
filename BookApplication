@@ -70,7 +70,7 @@ Create Classes and interfaces in repositories, services, controllers and models 
 	Right click on repositories package
 	New -> Class -> Name: BookListRepository -> Finish
 	Right click on repositories package
-	New -> Class -> Name: BookDBRepository -> Finish
+	New -> Interface -> Name: BookDBRepository -> Finish
 	Right click on repositories package
 	New -> Interface -> Name: BookCRUD -> Finish
 	Right click on services package
