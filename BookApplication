@@ -1,0 +1,1210 @@
+Create your Workspace folder
+	D drive
+	create folder by your name
+	under your name folder create folder SpringBootProjects
+	D:/John/SpringBootProjects
+
+Create Spring Boot Project
+	https://start.spring.io/
+		Project - Maven
+		Language - Java
+		Spring Boot - 3.4.5
+		Project Metadata
+		Group - com.cca.john
+		Artifact - book
+		Name - 
+		Description -
+		Package name - com.cca.john.book
+		Packaging - Jar
+		Java - 17
+	Dependencies
+		click Add Dependencies
+		enter Spring Web
+		select the first one.
+		click Generate
+
+Extract Project zip folder to your workspace folder
+	Go to your downloads folder (open folder explorer, left hand side 'downloads' folder will be there).
+	book zip file. right click. click 'Extract all ...'
+	click 'browse' button. go to 'SpringBootProjects' folder under your name folder (created early). 
+	dont open the 'SpringBootProjects' folder. just select that folder. click 'Select Folder' button.
+	click extract.
+	'book' folder will be created under your 'SpringBootProjects' folder.
+
+Open your Workspace folder in Eclipse
+	Open Eclipse
+	File -> Switch Workspace
+	check your SpringBootProjects folder is selected. if not browse and select that folder.
+	click 'Launch'
+
+Open book project in eclipse
+	File -> Open Projects from File System...
+	click 'Directory' button.
+	go to your 'SpringBootProjects' folder. 
+	select 'book' folder. dont open it. click select folder.
+	click finish.
+
+Hello World Program in Console. 
+	Expand src/main/java/
+	Expand the base package com.cca.john.book
+	BookApplication.java - open by double click
+	Next to the line SpringApplication.run(StudentApplication.class, args);
+	type System.out.println("Hello World");
+	save file.
+	Run -> Run As -> Java Application
+	Click on Terminate button (red color button) in the console.
+	
+
+Create 4 packages - repositories, services, controllers and models 
+	Right click on base package com.cca.john.book
+	New -> Package -> Name: com.cca.john.book.repositories -> Finish
+	Right click on base package com.cca.john.book
+	New -> Package -> Name: com.cca.john.book.services -> Finish
+	Right click on base package com.cca.john.book
+	New -> Package -> Name: com.cca.john.book.controllers -> Finish
+	Right click on base package com.cca.john.book
+	New -> Package -> Name: com.cca.john.book.models -> Finish
+	
+	
+Create Classes and interfaces in repositories, services, controllers and models packages
+	Right click on repositories package
+	New -> Class -> Name: BookListRepository -> Finish
+	Right click on repositories package
+	New -> Class -> Name: BookDBRepository -> Finish
+	Right click on repositories package
+	New -> Interface -> Name: BookCRUD -> Finish
+	Right click on services package
+	New -> Class -> Name: BookService -> Finish
+	Right click on controllers package
+	New -> Class -> Name: BookBrowserController -> Finish
+	Right click on controllers package
+	New -> Class -> Name: BookRESTController -> Finish
+	Right click on models package
+	New -> Class -> Name: Book -> Finish
+	Right click on models package
+	New -> Class -> Name: BookDto -> Finish
+	
+Create html files under src/main/resources/templates/book folder
+	Right click on templates folder -> New -> Folder -> Folder name: book -> Finish.
+	Right click on book folder -> New -> File -> File name: homePage.html -> Finish
+	Right click on book folder -> New -> File -> File name: bookList.html -> Finish
+	Right click on book folder -> New -> File -> File name: bookDetail.html -> Finish	
+	
+Fill those 3 html files with
+	<!doctype html>
+	<html>
+		<head>
+			<title>Book CRUD</title>
+		</head>
+		<body>
+			
+		</body>
+	</html>
+
+Create bookName data in BookListRepository 
+	Open BookListRepository.java
+	Create a private string object bookName inside the class.
+			private String bookName;
+	Inside the class, right click -> Source -> Generate Constructor from Superclass...
+		Assign your name in the constructor
+			bookName = "Spring Boot Learning by John";
+		Inside the class, right click -> Source -> Generate Getters and Setters...
+	SourceCode:
+		package com.cca.john.book.repositories;
+		public class BookListRepository {
+			private String bookName;
+			public BookListRepository() {
+				setBookName("Spring Boot by John");
+			}
+			public String getBookName() {
+				return bookName;
+			}
+			public void setBookName(String bookName) {
+				this.bookName = bookName;
+			}
+		}
+	Save it.
+	
+Create BookListRepository object in BookService
+	Open BookService.java 
+	Create a private BookListRepository object reference inside the class.
+		private BookListRepository repo;
+	Inside the class, right click -> Source -> Generate Constructor from Superclass...
+	Create BookListRepository object and assign to object reference in the default Constructor.
+		repo = new BookListRepository();
+	Import BookListRepository 
+		import com.cca.john.book.repositories.BookListRepository;
+	Create a method getBookName in the class. call BookListRepository getBookName and return the string.
+		public String getBookName() {
+			return repo.getBookName();
+		}
+	Source Code:
+		package com.cca.john.book.services;
+		import com.cca.john.book.repositories.BookListRepository;
+		public class BookService {
+			private BookListRepository repo;
+			public BookService(){
+				repo = new BookListRepository();
+			}
+			public String getBookName() {
+				return repo.getBookName();
+			}
+		}
+	Save it.
+
+Create BookService object in BookRESTController
+	Open BookRESTController.java 
+	Create a private BookService object reference inside the class.
+		private BookService service;
+	Inside the class, right click -> Source -> Generate Constructor from Superclass...
+	Create BookService object and assign to object reference in the default Constructor.
+		service = new BookService();
+	Import BookService class 
+		import com.cca.john.book.services.BookService;
+	Create a method getBookName in the class. call BookService getBookName and return the string.
+		public String getBookName() {
+			return repo.getBookName();
+		}
+	Source Code:
+		package com.cca.john.book.controllers;
+		import com.cca.john.book.services.BookService;
+		public class BookRESTController {
+			private BookService service;
+			public BookRESTController() {
+				service= new BookService();
+			}
+			public String getBookName() {
+				return service.getBookName();
+			}
+		}
+	Save it.
+
+Annotate BookRESTController to test in Postman and Browser.
+	Open BookRESTController.java
+	Annotate before the class name.
+		@RestController
+		@RequestMapping("/book/api")
+	Annotate before the method getBookName 
+		@GetMapping("/getbookname")
+	Import classes 
+		import org.springframework.web.bind.annotation.GetMapping;
+		import org.springframework.web.bind.annotation.RequestMapping;
+		import org.springframework.web.bind.annotation.RestController;
+	
+	Source Code:
+		package com.cca.john.book.controllers;
+
+		import org.springframework.web.bind.annotation.GetMapping;
+		import org.springframework.web.bind.annotation.RequestMapping;
+		import org.springframework.web.bind.annotation.RestController;
+
+		import com.cca.john.book.services.BookService;
+
+		@RestController
+		@RequestMapping("/book/api")
+		public class BookRESTController {
+			private BookService service;
+			
+			public BookRESTController() {
+				service= new BookService();
+			}
+			@GetMapping("/getbookname")
+			public String getBookName() {
+				return service.getBookName();
+			}
+		}
+	Save it.
+
+Test getBookName method from Postman and Browser
+	Open Postman
+		Operation: GET
+		URL: http://localhost:8080/book/api/getbookname 
+		Click Send button.
+	Open Browser
+		URL: http://localhost:8080/book/api/getbookname 
+	
+
+Change the POJO classes (Repository, Service and Controller) as Spring Beans.
+	Open BookListRepository.java 
+		Annotate the class with @Repository 
+		Import class 
+			import org.springframework.stereotype.Repository;
+	Open BookService.java
+		Annotate the class with @Service 
+		Import class 
+			import org.springframework.stereotype.Service;
+	Open BookRESTController.java (this step is not needed because we already annotated as RestController)
+		Annotate the class with @Controller 
+		Import class 
+			import org.springframework.stereotype.Controller;
+
+Allow Spring Boot to do the Automatic Dependency Injection for Repository and Service objects.
+	Open BookService.java
+		Annotate the private BookListRepository object reference with @Autowired 
+		Remove the default constructor.
+	Open BookRESTController.java
+		Annotate the private BookService object reference with @Autowired 
+		Remove the default constructor.
+	
+Test again in Postman and Browser
+
+Book Model creation 
+	Open Book.java from package com.cca.john.book.models.
+	Create private data in the class.
+		public class Book {
+			private Long bno;
+			private String title;
+			private String author;
+			private Double price;
+		}
+	Generate parameterized and default constructors.
+		Right click inside the class -> Source -> Generate Constructors from Superclass... -> Finish 
+		Right click inside the class -> Source -> Generate Constructors using Fields... -> Finish 
+	Generate Setter and Getter Methods.
+		Right click inside the class -> Source -> Generate Getters and Setters
+
+Interface BookCRUD.
+	Open BookCRUD.java from the package com.cca.john.book.repositories.
+	Provide the method signatures.
+		public interface BookCRUD<T1,T2> {
+			List<T1> readBooks();
+			void createBook(T1 book);
+			void updateBook(T1 book);
+			void deleteBook(T2 bno);
+			T1 getBookByBno(T2 bno);
+		}
+	Import classes
+		import java.util.List;
+	Save it.
+
+CRUD Implementation
+	Open BookListRepository.java
+		BookListRepository class should implement BookCRUD interface.
+			public class BookRepository implements BookCRUD<Book,Long> {}
+		Import classes
+			import com.cca.john.book.models.BookCRUD;
+			import com.cca.john.book.models.Book;
+		Add unimplemented methods
+			keep mouse pointer on class BookRepository 
+			click on 'Add unimplemented methods' in the quick fix.
+	Save it.
+	
+Create 4 book objects in an arraylist
+	Open BookRepository.java
+		Update the Constructor method 
+		@Repository
+public class BookListRepository implements BookCRUD<Book,Long> {
+	private String bookName;
+	private List<Book> books;
+	public BookListRepository() {
+		books = new ArrayList<Book>(Arrays.asList(
+				new Book(1L,"Java Core","Murgan",650.5),
+				new Book(2L,"JSP","Sivan",750.5),
+				new Book(3L,"Spring Boot","Raman",950.5),
+				new Book(4L,"Hibernate","Saraswathi",850.5)));
+	}
+	Import classes 
+		import java.util.List;
+		import java.util.ArrayList;
+		import java.util.Arrays;
+		import org.springframework.stereotype.Repository;
+		import com.cca.john.book.models.Book;
+
+CRUD operations in REST Controller.
+	Read All Books operation 
+		Open BookListRepository.java
+			Implement readBooks method
+			@Override
+			public List<Book> readBooks() {
+				return books;
+			}
+		Open BookService.java
+			Add readBooks method
+			public List<Book> readBooks() {
+				return repo.readBooks();
+			}
+			Import classes 
+				import java.util.List;
+				import com.cca.john.book.models.Book
+		Open BookRESTController.java
+			Add readBooks method
+			public List<Book> readBooks() {
+				return service.readBooks();
+			}
+			Annotate @GetMapping("/readbooks") for the method readBooks
+			Import classes 
+				import java.util.List;
+				import com.cca.john.book.models.Book;
+		Test the program in Postman application and browser also.
+			Open Postman Application
+			Operation: GET
+			URL: http://localhost:8080/book/api/readbooks
+			Click Send button.
+	
+	Create Book operation 
+		Open BookListRepository.java
+			Implement createBook method
+			@Override
+			public void createBook(Book book) {
+				books.add(book);
+			}
+		Open BookService.java
+			Add createBook method
+			public void createBook(Book book) {
+				repo.createBook(book);
+			}
+		Open BookRESTController.java
+			Add createBook method. Annotate @PostMapping for the createBook method.
+			Annotate @RequestBody for the method parameters.
+				@PostMapping("/createbook")
+				public String createBook(@RequestBody Book book) {
+					service.createBook(book);
+					return "Success";
+				}
+			Import classes 
+				import org.springframework.web.bind.annotation.PostMapping;
+				import org.springframework.web.bind.annotation.RequestBody;
+		Test the program in Postman application and browser also.
+			Open Postman Application
+			Operation: POST
+			URL: http://localhost:8080/book/api/createbook
+			Request Body -> Select raw -> Select JSON -> Enter the content in the Request body.
+				{
+					"bno": 5,
+					"title": "Cyber Security",
+					"author": "Roshan",
+					"price": 770.5
+				}
+			Click Send button.
+			
+			Operation: Get
+			URL: http://localhost:8080/book/api/readbooks
+			Click Send button 
+			
+	Update Book operation 
+		Open BookListRepository.java
+			Implement updateBook method
+			@Override
+			public void updateBook(Book book) {
+				int index =0;
+				for(int i=0;i<books.size();i++) {
+					if(books.get(i).getBno() == book.getBno()) {
+						index = i;
+					}
+				}
+				books.set(index, book);
+			}
+		Open BookService.java
+			Add updateBook method
+			public void updateBook(Book book) {
+				repo.updateBook(book);
+			}
+		Open BookRESTController.java
+			Add updateBook method. Annotate @PutMapping for the updateBook method.
+			Annotate @RequestBody for the method parameters.
+				@PutMapping("/updatebook")
+				public String updateBook(@RequestBody Book book) {
+					service.updateBook(book);
+					return "Success";
+				}
+			Import classes 
+				import org.springframework.web.bind.annotation.PutMapping;
+				
+		Test the program in Postman application and browser also.
+			Open Postman Application
+			Operation: PUT
+			URL: http://localhost:8080/book/api/updatebook
+			Request Body -> Select raw -> Select JSON -> Enter the content in the Request body.
+				{
+					"bno": 2,
+					"title": "Java Server Pages",
+					"author": "Sivachandran",
+					"price": 777.5
+				}
+			Click Send button.
+			
+			Operation: Get
+			URL: http://localhost:8080/book/api/readbooks
+			Click Send button 
+
+	Delete Book operation 
+		Open BookListRepository.java
+			Implement deleteBook method
+			@Override
+			public void deleteBook(Long bno) {
+				int index =0;
+				for(int i=0;i<books.size();i++) {
+					if(books.get(i).getBno() == bno) {
+						index = i;
+					}
+				}
+				books.remove(index);
+			}
+		Open BookService.java
+			Add deleteBook method
+			public void deleteBook(Long bno) {
+				repo.deleteBook(bno);
+			}
+		Open BookRESTController.java
+			Add deleteBook method
+			@DeleteMapping("deletebook")
+			public String deleteBook(@RequestParam Long bno) {
+				service.deleteBook(bno);
+				return "Success";
+			}
+			/*@DeleteMapping("/deletebook/{bno}")
+			public void deleteBook(@PathVariable("bno") Long bno) {
+				service.deleteBook(bno);
+				URL: http://localhost:8080/book/api/deletebook/3
+			}*/
+			Annotate @DeleteMapping("/deletebook") for the method deleteBook
+			Import classes 
+				import org.springframework.web.bind.annotation.DeleteMapping;
+				import org.springframework.web.bind.annotation.RequestParam;
+				
+		Test the program in Postman application and browser also.
+			Open Postman Application
+			Operation: DELETE
+			URL: http://localhost:8080/book/api/deletebook?bno=3
+			Click Send button.
+	Get Book by Book No operation
+		Open BookListRepository.java 
+			Implement the method getBookByBno
+			@Override
+			public Book getBookByBno(Long bno) {
+				int index =0;
+				for(int i=0;i<books.size();i++) {
+					if(books.get(i).getBno() == bno) {
+						index = i;
+					}
+				}
+				return books.get(index);
+			}
+		Open BookService.java
+			Add getBookByBno method
+			public Book getBookByBno(Long bno) {
+				return repo.getBookByBno(bno);
+			}
+		Open BookRESTController.java
+			Add getBookByBno method 
+			@GetMapping("getbookbybno")
+			public Book getBookByBno(@RequestParam Long bno) {
+				return service.getBookByBno(bno);
+			}
+		Test the program in Postman application and browser also.
+			Open Postman Application
+			Operation: GET
+			URL: http://localhost:8080/book/api/getbookbybno?bno=3
+			Click Send button.
+
+Create Schema (john_book) in MySQL Workbench 
+
+Add Jpa and MySQL dependencies in pom.xml file
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-data-jpa</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>com.mysql</groupId>
+		<artifactId>mysql-connector-j</artifactId>
+		<scope>runtime</scope>
+	</dependency>
+
+Update Maven Project
+	Right click pom.xml file -> Update Project -> Finish
+
+Update src/main/resources/application.properties file
+Provide the database name (just now created schema name in MySQL Workbench) in the second line properly.
+	spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+	spring.datasource.url=jdbc:mysql://localhost:3306/john_book
+	spring.datasource.username=root
+	spring.datasource.password=Admin@123
+	spring.jpa.show-sql=true
+	spring.jpa.hibernate.ddl-auto=update
+	
+Java class to Entity
+	Open Book.java from models
+	Annotate @Entity and @Table before the class Book 
+		@Entity
+		@Table(name="book")
+		public class Book {}
+	Annotate @Id and @GeneratedValue before the bno field
+		@Id
+		@GeneratedValue(strategy=GenerationType.IDENTITY)
+		private Long bno;
+	Import classes
+		import jakarta.persistence.Entity;
+		import jakarta.persistence.GeneratedValue;
+		import jakarta.persistence.GenerationType;
+		import jakarta.persistence.Id;
+		import jakarta.persistence.Table;
+	Save and Run. Open the MySQL Workbench and check student table is created.
+
+Interface BookDBRepository creation
+	Righ click the package com.cca.john.book.repositories -> New -> Interface -> Name: BookDBRepository -> Finish 
+	BookDBRepository should extend JpaRepository<Book,Long> 
+	Annotate @Repository for the BookDBRepository Interface 
+	Declare a method getBookByBno
+	Import classes
+		import org.springframework.data.jpa.repository.JpaRepository;
+		import org.springframework.stereotype.Repository;
+		import com.cca.john.book.models.Book;
+	Source:
+		package com.cca.john.book.repositories;
+		import org.springframework.data.jpa.repository.JpaRepository;
+		import org.springframework.stereotype.Repository;
+		import com.cca.john.book.models.Book;
+		@Repository
+		public interface BookDBRepository extends JpaRepository<Book,Long>{
+			Book getBookByBno(Long bno);
+		}
+		
+CRUD operations in REST Controller with Database data.
+	Read All Books operation 
+		Open BookService.java 
+		Create private reference for BookDBRepository and annotate with @Autowired 
+			@Autowired
+			private BookDBRepository repoDB;
+		Change the readBooks method implementation as 
+			public List<Book> readBooks(boolean isDB){
+				if(!isDB)
+					return repo.readBooks();
+				else
+					return repoDB.findAll();
+			}
+		Open BookRESTController.java 
+			Change the readBooks method implementation as 
+			@GetMapping("/readbooks")
+			public List<Book> readBooks(@RequestParam boolean db) {
+				return service.readBooks(db);
+			}
+	Create Book operation 
+		Open BookService.java 
+		Change the createBook method implementation as 
+			public void createBook(Book book, boolean isDB) {
+				if(!isDB)
+					repo.createBook(book);
+				else
+					repoDB.save(book);
+			}
+		Open BookRESTController.java 
+			Change the createBook method implementation as 
+			@PostMapping("/createbook")
+			public String createBook(@RequestParam boolean db, @RequestBody Book book) {
+				service.createBook(book,db);
+				return "Success";
+			}
+	Update Book operation 
+		Open BookService.java 
+		Change the updateBook method implementation as 
+			public void updateBook(Book book,boolean isDB) {
+				if(!isDB)
+					repo.updateBook(book);
+				else
+					repoDB.save(book);
+			}
+		Open BookRESTController.java 
+			Change the updateBook method implementation as 
+			@PutMapping("/updatebook")
+			public String updateBook(@RequestParam boolean db, @RequestBody Book book) {
+				service.updateBook(book,db);
+				return "Success";
+			}
+	Delete Book operation 
+		Open BookService.java 
+		Change the deleteBook method implementation as 
+			public void deleteBook(Long bno,boolean isDB) {
+				if(!isDB)
+					repo.deleteBook(bno);
+				else
+					repoDB.deleteById(bno);
+			}
+		Open BookRESTController.java 
+			Change the deleteBook method implementation as 
+			@DeleteMapping("deletebook")
+			public String deleteBook(@RequestParam boolean db, @RequestParam Long bno) {
+				service.deleteBook(bno,db);
+				return "Success";
+			}
+	Get Book By Bno operation 
+		Open BookService.java 
+		Change the getBookByBno method implementation as 
+			public Book getBookByBno(Long bno,boolean isDB) {
+				if(!isDB)
+					return repo.getBookByBno(bno);
+				else
+					return repoDB.getBookByBno(bno);
+			}
+		Open BookRESTController.java 
+			Change the getBookByBno method implementation as 
+			@GetMapping("getbookbybno")
+			public Book getBookByBno(@RequestParam boolean db, @RequestParam Long bno) {
+				return service.getBookByBno(bno,db);
+			}
+			
+		
+Add Thymeleaf Dependency in the Pom.xml file
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-thymeleaf</artifactId>
+	</dependency>
+
+Update Maven Package
+	Right click on pom.xml file. 
+	Maven -> Update Project... -> Select your project is checked, Check 'Force Update of Snapshots/Releases -> Finish 
+
+Home Page html file creation
+	Create a folder 'student' under src/main/resources/templates.
+	Create a file named 'homePage.html' under student folder.
+	<!doctype html>
+	<html>
+		<head>
+			<title>Student App</title>
+		</head>
+		<body>
+			<h1>Hello Student</h1>
+		</body>
+	</html>
+
+Hello Student program in HTML UI (using Browser)
+	Create StudentUIController class.
+		Right click on controllers package
+		New -> Class -> Name: StudentUIController -> Finish
+		Inside the class, right click -> Source -> Generate Constructor from Superclass...
+		Create a method showHomePage in the class.
+			public String showHomePage() {
+				return "/student/homePage";
+			}
+		Annotate @Controller above the class StudentUIController.
+		Annotate @RequestMapping("/ui") above the class StudentUIController.
+		Annotate @GetMapping("studentname") above the method showHomePage.
+		Import the classes:
+			import org.springframework.stereotype.Controller;
+			import org.springframework.web.bind.annotation.GetMapping;
+			import org.springframework.web.bind.annotation.RequestMapping;
+	Run the program.	
+	
+Hello <Your Name> in HTML UI 
+	Open StudentUIController class.
+	Change the showHomePage method 
+	@GetMapping("/studentname")
+	public String showHomePage(Model model) {
+		String nameDto = "Welcome John";
+		model.addAttribute("nameDto",nameDto);
+		return "/student/homePage";
+	}
+	Import Model class:
+		import org.springframework.ui.Model;
+	Open homePage.html file
+	Change the body tag as:
+		<body>
+			<h1 th:text="${nameDto}"></h1>
+		</body>
+	Test in Browser
+		Open Browser
+		URL: http://localhost:8080/ui/studentname
+
+Include Dev Tools dependency
+	Copy following dependency and paste in the pom.xml 
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-devtools</artifactId>
+		<scope>runtime</scope>
+		<optional>true</optional>
+	</dependency>
+	Update Maven Package.
+	Save and Run.
+	
+	
+		
+Read All Students operation in Browser 
+	Create studentList.html in src/main/resources/templates/student folder.
+	Right Click on templates/student folder -> New -> File -> File name: studentList.html  -> Finish 
+		<!doctype html>
+		<html>
+			<head>
+				<title>Students</title>
+			</head>
+			<body>
+				<h1>Student List</h1>
+				<button onclick="location.href = '/ui/createstudent'">Add New Student</button>
+				<table border="2" width="80%">
+					<thead>
+						<tr>
+							<th>Roll No</th>
+							<th>Name</th>
+							<th>Course</th>
+							<th>Percentage</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="student : ${students}">
+							<td th:text="${student.rno}"></td>
+							<td th:text="${student.name}"></td>
+							<td th:text="${student.course}"></td>
+							<td th:text="${student.percentage}"></td>
+							<td>
+								<a th:href="@{/ui/updatestudent(rno=${student.rno})}">Edit</a>
+								<a th:href="@{/ui/deletestudent(rno=${student.rno})}" onclick="return confirm('Are you sure?')">Delete</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</body>
+		</html>
+	Open StudentUIController.java
+		Add studentList method
+			@GetMapping("/studentlist")
+			public String studentList(Model model) {
+				List<Student> students = service.readAllStudents();
+				model.addAttribute("students",students);
+				return "/student/studentList";
+			}
+		Import classes
+			import java.util.List;
+			import org.springframework.ui.Model;
+			import com.cca.john.student.models.Student;
+			import com.cca.john.student.services.StudentService;
+	Save it. Terminate the program if already running.
+	Open Browser and test it.
+	URL: http://localhost:8080/ui/studentlist
+	
+Create Student Operation in Console
+	Open StudentRepository.java
+		Implement createItem method
+		@Override
+		public void createItem(Student item) {
+			students.add(item);
+		}
+	Open StudentService.java
+		Add createStudent method
+		public void createStudent(Student student) {
+			repo.createItem(student);
+		}
+	Open StudentConsoleController.java
+		Add createStudent method
+		public void createStudent(Student student) {
+			service.createStudent(student);
+		}
+	Open StudentApplication.java
+		Add a method createStudent after the main method.
+			public static void createStudent(StudentConsoleController ctr) {
+				Student student = new Student(5l,"Krishnan","Block Chain",92.6);
+				ctr.createStudent(student);
+			}
+		Call this method in the main method.
+			public static void main(String[] args) {
+				SpringApplication.run(StudentApplication.class, args);
+				StudentConsoleController ctr = new StudentConsoleController();
+				studentList(ctr);
+				createStudent(ctr);
+				studentList(ctr);
+			}
+	Run the program.
+	Terminate the program.
+
+Create Student Operation in REST
+	Open StudentRESTController.java
+		Add createNewStudent method
+		@PostMapping("/createstudent")
+		public String createNewStudent(@RequestBody Student student) {
+			service.createStudent(student);
+			return "Success";
+		}
+	Test Create Student operation in Postman application.
+		Open Postman Application
+		Operation: POST
+		URL: http://localhost:8080/rest/createstudent
+		Request Body -> raw -> JSON
+			{
+				"rno": 7,
+				"name": "Vinayak",
+				"course": ".NET",
+				"percentage": 75.5
+			}
+		Click Send button.
+	To see the added student	
+		Operation: GET
+		URL: http://localhost:8080/rest/studentlist
+		Click Send button.
+	
+Create Student Operation in Browser
+	Create a class named StudentDto in the com.cca.john.student.models package. 
+		Right click models package -> New -> Class -> Class name: StudentDto -> Finish.
+		Create private data in the class.
+		public class StudentDto {
+			private Long rno;
+			private String name;
+			private String course;
+			private Double percentage;
+		}
+		Generate parameterized and default constructors.
+		Generate Setter and Getter Methods.
+		Save it.
+	Open StudentUIController.java 
+		Add GetMapping and PostMapping createStudent methods.
+		@GetMapping("/createstudent")
+		public String createStudent(Model model) {
+			StudentDto studentDto	 = new StudentDto();
+			model.addAttribute("studentDto",studentDto);
+			return "student/createStudent";
+		}
+		@PostMapping("/createstudent")
+		public String createStudent(@ModelAttribute StudentDto studentDto) {
+			Student student = new Student();
+			student.setRno(studentDto.getRno());
+			student.setName(studentDto.getName());
+			student.setCourse(studentDto.getCourse());
+			student.setPercentage(studentDto.getPercentage());
+			service.createStudent(student);
+			return "redirect:/ui/studentlist";
+		}
+		Import classes
+			import com.cca.john.student.models.StudentDto;
+	Create createStudent.html under src/main/resources/templates/student folder
+		Right Click on templates/student folder -> New -> File -> File name: createStudent.html  -> Finish 
+		<!doctype html>
+		<html>
+			<head>
+				<title>Student Management System</title>
+			</head>
+			<body>
+				<h1>New Student</h1>
+				<form method="post" th:object="${studentDto}">
+					<table width = 60%>
+						<tr>
+							<td>Roll No:</td>
+							<td> <input th:field="${studentDto.rno}"></td>
+						</tr>
+						<tr>
+							<td>Name:</td>
+							<td> <input th:field="${studentDto.name}"></td>
+						</tr>
+						<tr>
+							<td>Course</td>
+							<td> <input th:field="${studentDto.course}"></td>
+						</tr>
+						<tr>
+							<td>Percentage</td>
+							<td> <input th:field="${studentDto.percentage}"></td>
+						</tr>
+						<tr>
+							<td><button type ="submit">Submit</button></td>
+							<td><button onclick="location.href = '/ui/studentlist'" >Cancel</button></td>
+						</tr>
+					</table>
+				</form>
+			</body>
+		</html>
+	Save it.
+	Test Create Student Operation in Browser
+		Open Browser and URL: http://localhost:8080/ui/studentlist
+		Click Add New Student button.
+		Fill new student roll no, name, course and percentage.
+		Click submit.
+		New student is added.
+
+Update Student in Console
+Open StudentRepository.java
+		Implement updateItem method
+		@Override
+		public void updateItem(Student student) {
+			students.add(student);
+		}
+	Open StudentService.java
+		Add updateStudent method
+		public void updateStudent(Student student) {
+			repo.createItem(student);
+		}
+	Open StudentConsoleController.java
+		Add updateStudent method
+		public void updateStudent(Student student) {
+			service.updateStudent(student);
+		}
+	Open StudentApplication.java
+		Add a method updateStudent after the createStudent method.
+			public static void updateStudent(StudentConsoleController ctr) {
+				List<Student> students = ctr.readAllStudents();
+				Student student = students.get(2);
+				student.setName("Sekhar");
+				student.setCourse("Angular");
+				student.setPercentage(71.5);
+				ctr.updateStudent(student);
+			}
+		Call this method in the main method.
+			public static void main(String[] args) {
+				SpringApplication.run(StudentApplication.class, args);
+				StudentConsoleController ctr = new StudentConsoleController();
+				studentList(ctr);
+				updateStudent(ctr);
+				studentList(ctr);
+			}
+	Run the program.
+	Terminate the program.
+	
+Update Student in REST
+	Open StudentRESTController.java
+		Add updateStudent method
+		@PutMapping("/updatestudent")
+		public String updateStudent(@RequestBody Student student) {
+			service.updateStudent(student);
+			return "Success";
+		}
+	Test Create Student operation in Postman application.
+		Open Postman Application
+		Operation: PUT
+		URL: http://localhost:8080/rest/updatestudent
+		Request Body -> raw -> JSON
+			{
+				"rno": 4,
+				"name": "Saraswathi Devi",
+				"course": "Hibernate and Java",
+				"percentage": 66.6
+			}
+		Click Send button.
+	To see the added student	
+		Operation: GET
+		URL: http://localhost:8080/rest/studentlist
+		Click Send button.
+		
+Update Student Operation in Browser 
+	Open StudentRepository.java
+		Implement getItemById method
+		@Override
+		public Student getItemById(Long id) {
+			int index =0;
+			for(int i=0;i<students.size();i++) {
+				if(students.get(i).getRno() == id) {
+					index = i;
+				}
+			}
+			return students.get(index);
+		}
+	Open StudentService.java
+		Add getStudentByRno method
+		public Student getStudentByRno(Long rno) {
+			return repo.getItemById(rno);
+		}
+	Open StudentUIController.java 
+		Add GetMapping and PostMapping updateStudent methods.
+		@GetMapping("/updatestudent")
+		public String updateStudent(Model model,@RequestParam("rno") Long rno) {
+				Student student = service.getStudentByRno(rno);
+				StudentDto studentDto = new StudentDto();
+				studentDto.setRno(student.getRno());
+				studentDto.setName(student.getName());
+				studentDto.setCourse(student.getCourse());
+				studentDto.setPercentage(student.getPercentage());
+				model.addAttribute("studentDto",studentDto);
+				return "student/updateStudent";
+		}
+		@PostMapping("/updatestudent")
+		public String updateStudent(@RequestParam("rno") Long rno, @ModelAttribute StudentDto studentDto) {
+				Student student = service.getStudentByRno(rno);
+				student.setName(studentDto.getName());
+				student.setCourse(studentDto.getCourse());
+				student.setPercentage(studentDto.getPercentage());
+				service.updateStudent(student);
+				return "redirect:/ui/studentlist";
+		}
+	Create updateStudent.html under src/main/resources/templates/student folder
+		Right Click on templates/student folder -> New -> File -> File name: updateStudent.html  -> Finish 
+		<!doctype html>
+		<html>
+			<head>
+				<title>Student Management System</title>
+			</head>
+			<body>
+				<h1>Update Student</h1>
+				<form method="post" th:object="${studentDto}">
+					<table width = 60%>
+						<tr>
+							<td>Roll No:</td>
+							<td> <input readonly th:field="${studentDto.rno}"></td>
+						</tr>
+						<tr>
+							<td>Name:</td>
+							<td> <input th:field="${studentDto.name}"></td>
+						</tr>
+						<tr>
+							<td>Course:</td>
+							<td> <input th:field="${studentDto.course}"></td>
+						</tr>
+						<tr>
+							<td>Percentage:</td>
+							<td> <input th:field="${studentDto.percentage}"></td>
+						</tr>
+						<tr>
+							<td><button type ="submit">Submit</button></td>
+							<td><button onclick="location.href = '/ui/studentlist'" >Cancel</button></td>
+						</tr>
+					</table>
+					
+				</form>
+
+			</body>
+		</html>
+	Save it.
+	Test Update Student Operation in Browser
+		Open Browser and URL: http://localhost:8080/ui/studentlist
+		Click Edit link in any of the student.
+		update Student name, course and percentage.
+		Click submit.
+		Student is updated.
+		
+Delete Student Operation in Console
+	Open StudentRepository.java
+		Implement deleteItem method
+		@Override
+		public void deleteItem(Long rno) {
+			int index =0;
+			for(int i=0;i<students.size();i++) {
+				if(students.get(i).getRno() == rno) {
+					index = i;
+				}
+			}
+			students.remove(index);
+		}
+	Open StudentService.java
+		Add deleteStudent method
+		public void deleteStudent(Long rno) {
+			repo.deleteItem(rno);
+		}
+	Open StudentConsoleController.java
+		Add deleteStudent method
+		public void deleteStudent(Long rno) {
+			service.deleteStudent(rno);
+		}
+	Open StudentApplication.java
+		Add a method deleteStudent after the updateStudent method.
+		public static void deleteStudent(StudentConsoleController ctr) {
+			ctr.deleteStudent(2l);
+		}
+		Call this method in the main method.
+			public static void main(String[] args) {
+				SpringApplication.run(StudentApplication.class, args);
+				StudentConsoleController ctr = new StudentConsoleController();
+				studentList(ctr);
+				deleteStudent(ctr);
+				studentList(ctr);
+			}
+	Run the program.
+	Terminate the program.
+
+Delete Student Operation in REST
+	Open StudentRESTController.java
+		Add deleteStudent method
+		@DeleteMapping("/deletestudent/{rno}")
+		public void deleteStudent(@PathVariable("rno") Long rno) {
+			service.deleteStudent(rno);
+		}
+	Test Delete Student operation in Postman application.
+		Open Postman Application
+		Operation: DELETE
+		URL: http://localhost:8080/rest/deletestudent/3
+		Click Send button.
+	To see the student list
+		Operation: GET
+		URL: http://localhost:8080/rest/studentlist
+		Click Send button.
+
+Delete Student Operation in Browser
+	Open StudentUIController.java 
+		Add GetMapping deleteStudent method.
+		@GetMapping("/deletestudent")
+		public String deleteStudent(@RequestParam("rno") Long rno) {
+			service.deleteStudent(rno);
+			return "redirect:/ui/studentlist";
+		}
+	Save and Run.
+	Open Student List in the browser.
+	Click on the delete link of any student.
+	
+
+Create StudentRepositoryDB interface and extend JpaRepository interface
+	Right click repositories package -> New -> Interface -> Name: StudentRepositoryDB -> Finish 
+	Annotate, extend and add a method getByRno.
+		@Repository
+		public interface StudentRepositoryDB extends JpaRepository<Student,Long> {
+			public Student getByRno(Long rno);
+		}
+	Import classes.
+		import org.springframework.data.jpa.repository.JpaRepository;
+		import org.springframework.stereotype.Repository;
+		import com.cca.john.student.models.Student;
+	Save it.
+
+Create StudentServiceDB class
+	Right click services package -> New -> Class -> Name: StudentServiceDB -> Finish 
+	Annotate and implement CRUD operations by calling repository methods.
+		@Service
+		public class StudentServiceDB {
+			@Autowired
+			private StudentRepositoryDB repo;
+			public List<Student> readAllStudents() {
+				return repo.findAll();
+			}
+			public void createStudent(Student student) {
+				repo.save(student);
+			}
+			public void updateStudent(Student student) {
+				repo.save(student);
+			}
+			public Student getStudentByRno(Long rno) {
+				return repo.getByRno(rno);
+			}
+			public void deleteStudent(Long rno) {
+				repo.deleteById(rno);
+			}
+		}
+	Import classes
+		import java.util.List;
+		import org.springframework.beans.factory.annotation.Autowired;
+		import org.springframework.stereotype.Service;
+		import com.cca.john.student.models.Student;
+		import com.cca.john.student.repositories.StudentRepositoryDB;
+	Save it.
+	
+Add GET, POST, PUT and DELETE mapping methods for DB.
+	Open StudentRestController.java
+	Create StudentServiceDB reference as private and annotate it inside the class.
+		@Autowired
+		private StudentServiceDB serviceDB;
+	Add the following methods.
+		@GetMapping("/db/studentlist")
+		public List<Student> studentListDB() {
+			return serviceDB.readAllStudents();
+		}
+		@PostMapping("/db/createstudent")
+		public String createStudentDB(@RequestBody Student student) {
+			serviceDB.createStudent(student);
+			return "Success";
+		}
+		@PutMapping("/db/updatestudent")
+		public String updateStudentDB(@RequestBody Student student) {
+			serviceDB.updateStudent(student);
+			return "Success";
+		}
+		@DeleteMapping("/db/deletestudent/{rno}")
+		public void deleteStudentDB(@PathVariable("rno") Long rno) {
+			serviceDB.deleteStudent(rno);
+		}
+	Save it.
+	
+	
+Test 4 Database REST services in Postman application.
+	Open Postman.
+	Test the GET, POST, PUT and DELETE request by using the following urls.
+		http://localhost:8080/rest/db/studentlist
+		http://localhost:8080/rest/db/createstudent
+		http://localhost:8080/rest/db/updatestudent 
+		http://localhost:8080/rest/db/deletestudent/3
+	Check the database table for all the updates using MySQL Workbench.
+
+
+
+
+
+
+
