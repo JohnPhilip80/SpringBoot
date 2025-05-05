@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Books App</title>
+	</head>
+	<body>
+		<h1 th:if="${isDB}">Book List (Data Base)</h1>
+		<h1 th:unless="${isDB}">Book List (Local Storage)</h1>
+		<h3 th:text="${mySession}"></h3>
+		<button onclick="location.href='/book'">Home</button>
+		<button th:if="${isDB}" onclick="location.href='/book/createbook?db=true'">Create Book</button>
+		<button th:unless="${isDB}" onclick="location.href='/book/createbook?db=false'">Create Book</button>
+		<table border="2" width="80%">
+			<thead>
+				<tr>
+					<th>Book No</th>
+					<th>Title</th>
+					<th>Author</th>
+					<th>Price</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="book:${books}">
+					<td th:text="${book.bno}"></td>
+					<td th:text="${book.title}"></td>
+					<td th:text="${book.author}"></td>
+					<td th:text="${book.price}"></td>
+					<td>
+						<a th:href="@{/book/updatebook(db=${isDB},bno=${book.bno})}">Update</a>
+						<a th:href="@{/book/deletebook(db=${isDB},bno=${book.bno})}" onclick="return confirm('Are you sure?')">Delete</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+</html>

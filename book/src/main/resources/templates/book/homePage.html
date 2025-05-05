@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Book App</title>
+	</head>
+	<body>
+		<h1>Book Management System</h1>
+		<h2 th:text="${myBook}"></h2>
+		<h3 th:text="${mySession}"></h3>
+		<button onclick="location.href='/book/readbooks?db=false'">Read Books (Local Storage)</button>
+		<button onclick="location.href='/book/readbooks?db=true'">Read Books (Data Base)</button>
+	</body>
+</html>

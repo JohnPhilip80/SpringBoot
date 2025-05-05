@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Book App</title>
+	</head>
+	<body>
+		<h1 th:if="${isCreate}">Create Book</h1>
+		<h1 th:unless="${isCreate}">Update Book</h1>
+		<h3 th:text="${mySession}"></h3>
+		<form method="post" th:object="${bookDto}">
+			<table width="60%">
+				<tr>
+					<td>Book No:</td>
+					<td><input th:if="${!isDB}" th:readonly="${!isCreate}" th:field="${bookDto.bno}"></td>
+				</tr>
+				<tr>
+					<td>Title:</td>
+					<td><input th:field="${bookDto.title}"></td>
+				</tr>
+				<tr>
+					<td>Author:</td>
+					<td><input th:field="${bookDto.author}"></td>
+				</tr>
+				<tr>
+					<td>Price:</td>
+					<td><input th:field="${bookDto.price}"></td>
+				</tr>
+				<tr>
+					<td>
+						<button type="submit">Submit</button>
+					</td>
+					<td>
+						<a th:if="${isDB}" th:href="@{/book/readbooks?db=true}">Cancel</a>
+						<a th:unless="${isDB}" th:href="@{/book/readbooks?db=false}">Cancel</a>
+						<a th:href="@{/book/}">Home</a>
+					</td>
+				</tr>
+			</table>
+	</body>
+</html>
