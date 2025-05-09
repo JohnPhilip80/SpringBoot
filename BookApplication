@@ -897,3 +897,305 @@ Create Book using Browser UI
 			service.createBook(book, db);
 			return "redirect:/book/readbooks?db=" + db;
 		}
+	Save it. Test it.
+
+Update Book using Browser UI 
+	Open bookList.html file from src/main/java/resources/templates/book folder 
+		Modify the action section as.
+			<td>
+				<a th:href="@{/book/updatebook(db=${isDB},bno=${book.bno})}">Update</a>
+				<a th:href="@{/book/deletebook(db=${isDB},bno=${book.bno})}" onclick="return confirm('Are you sure?')">Delete</a>
+			</td>
+	Open bookDetail.html file from src/main/java/resources/templates/book folder 
+		Add this th:if before the form
+			<h1 th:if="${isNew}">Create Book</h1>
+			<h1 th:unless="${isNew}">Update Book</h1>
+	Open BookBrowserController.java
+		Add the following line before the return statement of the GetMaapping of createStudent method 
+			model.addAttribute("isNew",isNew);
+		Add GetMapping and PostMapping methods for updateBook method
+			@GetMapping("/updatebook")
+			public String updateBook(@RequestParam boolean db, Model model, @RequestParam Long bno) {
+				Book book = service.getBookByBno(bno, db);
+				BookDto bookDto = new BookDto();
+				bookDto.setBno(book.getBno());
+				bookDto.setTitle(book.getTitle());
+				bookDto.setAuthor(book.getAuthor());
+				bookDto.setPrice(book.getPrice());
+				model.addAttribute(bookDto);
+				model.addAttribute("isDB",db);
+				model.addAttribute("isCreate",false);
+				return "/book/bookDetail.html";
+			}
+			@PostMapping("/updatebook")
+			public String updateBook(@RequestParam boolean db,@RequestParam Long bno, @ModelAttribute BookDto bookDto) {
+				Book book = service.getBookByBno(bno, db);
+				book.setTitle(bookDto.getTitle());
+				book.setAuthor(bookDto.getAuthor());
+				book.setPrice(bookDto.getPrice());
+				service.updateBook(book, db);
+				return "redirect:/book/readbooks?db=" + db;
+			}
+		Save it. Test it.
+	
+Delete Book using Browser UI.
+	Open BookBrowserController.java
+	Add GetMapping for the deleteBook method
+	@GetMapping("/deletebook")
+	public String deleteBook(@RequestParam boolean db,@RequestParam Long bno) {
+		service.deleteBook(bno, db);
+		return "redirect:/book/readbooks?db=" + db;
+	}
+	Save it. Test it.
+	
+Spring Security
+	Add Security dependency
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+	Save it. Run it.
+	Copy the generated password and login using the username as user.
+	Check the session id in the developer tools in chrome (F12)
+	
+Print the Session Id 
+	Open BookBrowserController.java 
+		model.addAttribute("mySession",req.getSession().getId()); - Call this method
+		HttpServletRequest req - Include this as method parameter
+		import jakarta.servlet.http.HttpServletRequest; - import this.
+	Open .html files
+		<h2 th:text="${mySession}"></h2> - add this in all the files.
+	Save it. Test it.
+
+User name and password in application.properties.
+	Include the following in the application.properties.
+		spring.application.name=SpringSecurity
+		spring.security.user.name=John
+		spring.security.user.password=1234
+	Save it. Test it. Also in Postman. user basic authentication.
+
+CSRF - Cross Site Request Forgery
+	Create, Update and Delete operations wont work in Browser and REST
+	To make it work.
+	Find the csrf token sent by server in the logout page.
+	Open BookBrowserController.java
+		@GetMapping("/csrf-token")
+		public CsrfToken getCsrfToken(HttpServletRequest req){
+			return (CsrfToken) req.getAttribute("_csrf");
+		}
+	Open Postman
+		Method: GET
+		Url: http://localhost:8080/book/api/csrf-token
+		Send Button.
+		Copy the csrf token.
+		
+		Method: POST
+		URL: http://localhost:8080/book/api/createbook?db=true
+		Request Authorization: username and passoword 
+		Request Body:
+			{   
+				"title": "Hibernate",
+				"author": "Prasanth",
+				"price": 555.0
+			}
+		Reqeust Header:
+			Key: X-CSRF-TOKEN
+			Value: paste the csrf token.
+		Send Button.
+		Check the newly created book available or not.
+		
+Customize Security Filter Chain.
+	Create new Package com.cca.john.book.configurations
+	Create new Class SecurityConfiguration under this package.
+		package com.cca.john.book.configurations;
+
+		import org.springframework.context.annotation.Bean;
+		import org.springframework.context.annotation.Configuration;
+		import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+		import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+		import org.springframework.security.web.SecurityFilterChain;
+
+		@Configuration
+		@EnableWebSecurity
+		public class SecurityConfiguration {
+			@Bean
+			public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+				return http.build();
+			}
+		}
+	Save it. Test it. Now login form wont come. but updation and creation not allowed. because of csrf.
+
+Disable csrf 
+	modify the securityFilterChain as:
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+		http.csrf(customizer -> customizer.disable());
+		return http.build();
+	}
+	Save and test.
+
+To prevent csrf enable same site strict in application.properties file.
+server.servlet.session.cookie.same-site=strict	
+
+Enable Authenticate and use Login form to authenticate.
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+		http.csrf(customizer -> customizer.disable());
+		http.authorizeHttpRequests(req -> req.anyRequest().authenticated());
+		http.formLogin(Customizer.withDefaults());
+		http.httpBasic(Customizer.withDefaults());
+		return http.build();
+	}
+	To enable authentication in Postman
+		http.httpBasic(Customizer.withDefaults());
+	To enable server to send new session id for each and every request
+		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		To test in postman
+			Open BookRESTController.java
+				@GetMapping("/getbookname")
+				public String getBookName(HttpServletRequest req) {
+					return service.getBookName() + req.getSession().getId();
+				}
+			Open Postman
+				Method: GET
+				URL:http://localhost:8080/book/api/getbookname
+				click Send Button multiple times. notice different session id generated.
+			Test in Browser
+				Problem is login is asking every time. 
+				for this issue comment out http.formLogin(Customizer.withDefaults());
+	change the securityFilterChain method as builder:
+		return http.csrf(customizer -> customizer.disable())
+				.authorizeHttpRequests(req -> req.anyRequest().authenticated())
+				//.formLogin(Customizer.withDefaults())
+				.httpBasic(Customizer.withDefaults())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.build();
+	Save it. Test it.
+	
+Multiple users. In Memory User Details Manager
+	Open SecurityConfiguration.java 
+	add the method userDetailsService
+		@Bean
+		public UserDetailsService userDetailsService() {
+			UserDetails user1=User.withDefaultPasswordEncoder().username("abc").password("abc").roles("USER").build();
+			UserDetails user2=User.withDefaultPasswordEncoder().username("def").password("def").roles("USER").build();
+			UserDetails user3=User.withDefaultPasswordEncoder().username("ghi").password("ghi").roles("USER").build();
+			//return new InMemoryUserDetailsManager(user1,user2,user3);
+			
+			List<UserDetails> users = new ArrayList<UserDetails>();
+			users.add(user1);
+			users.add(user2);
+			users.add(user3);
+			return new InMemoryUserDetailsManager(users);
+			
+		}
+	Save it. Test it.
+
+Multiple users. Using database.
+	Create new class 'AppUser' under com.cca.john.book.models package.
+	Create private members
+		private Long id;
+		private String name;
+		private String email;
+		private String password;
+	Generate default and parameterized constructors, getters and setters.
+	Annotate @Entity and @Table 
+		@Entity
+		@Table(name="user")
+		public class AppUser {
+	Annotate @Id and @GeneratedValue for the private member id.
+		@Id
+		@GeneratedValue(strategy=GenerationType.IDENTITY)
+		private Long id;
+	Import classes:
+		import jakarta.persistence.Entity;
+		import jakarta.persistence.GeneratedValue;
+		import jakarta.persistence.GenerationType;
+		import jakarta.persistence.Id;
+		import jakarta.persistence.Table;
+	Create new class 'AppUserPrincipal' under com.cca.john.book.models package.
+		implement UserDetails interface 
+			public class AppUserPrincipal implements UserDetails {
+		implement unimplement methods.
+			SourceCode:
+			public class AppUserPrincipal implements UserDetails {
+	
+				private AppUser appUser;
+				
+				public AppUserPrincipal(AppUser appUser) {
+					this.appUser = appUser;
+				}
+				@Override
+				public Collection<? extends GrantedAuthority> getAuthorities() {
+					return Collections.singleton(new SimpleGrantedAuthority("USER"));
+				}
+				@Override
+				public String getPassword() {
+					return appUser.getPassword();
+				}
+				@Override
+				public String getUsername() {
+					return appUser.getEmail();
+				}
+			}
+		import classes:
+			import java.util.Collection;
+			import java.util.Collections;
+			import org.springframework.security.core.GrantedAuthority;
+			import org.springframework.security.core.authority.SimpleGrantedAuthority;
+			import org.springframework.security.core.userdetails.UserDetails;
+		Create interface 'MyUserDetailsRepository' under com.cca.john.book.models package.
+			Extend JpaRepository<AppUser,Long>
+			Annotate @Repository to the class 
+			Add a method getAppUserByEmail
+			Source Code:
+			package com.cca.john.book.repositories;
+
+			import org.springframework.data.jpa.repository.JpaRepository;
+			import org.springframework.stereotype.Repository;
+			import com.cca.john.book.models.AppUser;
+
+			@Repository
+			public interface MyUserDetailsRepository extends JpaRepository<AppUser,Long> {
+				AppUser getAppUserByEmail(String userName);
+			}
+		Create class 'MyUserDetailsService' under com.cca.john.book.models package.
+			implement UserDetailsService 
+			implement method loadUserByUsername
+			Autowire MyUserDetailsReository reference.
+			Source Code:
+				package com.cca.john.book.services;
+
+				import org.springframework.beans.factory.annotation.Autowired;
+				import org.springframework.security.core.userdetails.UserDetails;
+				import org.springframework.security.core.userdetails.UserDetailsService;
+				import org.springframework.security.core.userdetails.UsernameNotFoundException;
+				import org.springframework.stereotype.Service;
+				import com.cca.john.book.models.AppUserPrincipal;
+				import com.cca.john.book.repositories.MyUserDetailsRepository;
+
+				@Service
+				public class MyUserDetailsService implements UserDetailsService {
+					@Autowired
+					private MyUserDetailsRepository repo;
+					@Override
+					public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+						return new AppUserPrincipal(repo.getAppUserByEmail(userName));
+					}
+
+				}
+		Open SecurityConfiguration.java
+			Add Authentication Provider method 
+				@Bean
+				public AuthenticationProvider authenticationProvider() {
+					DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+					provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+					provider.setUserDetailsService(myUserDetailsService);
+					return provider;
+				}
+		Save it.
+		Run it. Terminate it.
+		Open MySQL Workbench. Add 2 users.
+		Run the application. login with the newly created used in db.
+		Also test in Postman.
+		
