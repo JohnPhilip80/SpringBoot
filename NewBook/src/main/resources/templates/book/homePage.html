@@ -1,0 +1,22 @@
+<!doctype html>
+	<html>
+		<head>
+			
+			<title>Book App</title>
+			<link rel="stylesheet" href="/css/bookStyle.css" />
+		</head>
+		<body>
+			<ul>
+			  <li><a class="active" href="/book">Home</a></li>
+			  
+			  <li><a href='/book/readbooks?db=false'>Read Books (Local Storage)</a></li>
+			  <li><a href='/book/readbooks?db=true'>Read Books (Data Base)</a></li>
+			  <li style="float:right"><a href="/logout">Logout</a></li>
+			  <li style="float:right"><a href="/book/registeruser">Register</a></li>
+			</ul>
+			<h1 th:text="${myBook}"></h1>
+			<h2 th:text="${mySession}"></h2>
+			<body>
+			</body>
+		</body>
+	</html>
