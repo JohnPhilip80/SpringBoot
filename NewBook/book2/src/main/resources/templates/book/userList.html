@@ -1,0 +1,43 @@
+<!doctype html>
+		<html>
+			<head>
+				<title>Books App</title>
+				<link rel="stylesheet" href="/css/bookStyle.css" />
+			</head>
+			<body>
+				<ul>
+				  <li><a href="/book">Home</a></li>
+				  <li><a href="/book/registeruser">Register</a></li>
+				  <li><a class="active" href='/book/readbooks?db=false'>Read Books (Local Storage)</a></li>
+				  <li><a class="active" href='/book/readbooks?db=true'>Read Books (Data Base)</a></li>
+				  <li><a class="active" href="#UserList">User List</a></li>
+				  <li style="float:right"><a href="#">Logout</a></li>
+				</ul>
+				<h1>User List</h1>
+				<table border="2" width="80%">
+					<thead>
+						<tr>
+							<th>User ID</th>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Password</th>
+							<th>Role</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="user:${users}">
+							<td th:text="${user.id}"></td>
+							<td th:text="${user.name}"></td>
+							<td th:text="${user.email}"></td>
+							<td th:text="${user.password}"></td>
+							<td th:text="${user.role}"></td>
+							<td>
+								<a th:href="@{/book/updateuser(id=${user.id})}">Update</a>
+								<a th:href="@{/book/deleteuser(id=${user.id})}" onclick="return confirm('Are you sure?')">Delete</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</body>
+		</html>

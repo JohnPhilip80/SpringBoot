@@ -1,0 +1,29 @@
+<!doctype html>
+	<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+		<head>
+			
+			<title>Book App</title>
+			<link rel="stylesheet" href="/css/bookStyle.css" />
+		</head>
+		<body>
+			<ul sec:authorize="isAuthenticated()">
+			  <li><a class="active" href="/book">Home</a></li>
+			  <li><a href='/book/readbooks?db=false'>Read Books (Local Storage)</a></li>
+			  <li><a href='/book/readbooks?db=true'>Read Books (Data Base)</a></li>
+			  <li style="float:right"><a href="/logout">Logout</a></li>
+			  <h1 th:text="${myBook}"></h1>
+			  <h2 th:text="${mySession}"></h2>
+			</ul>
+			<form sec:authorize = "isAuthenticated()" method="post" action="/logout">
+				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+				<button type="submit">Logout</button>
+			</form>
+			<ul sec:authorize = "!isAuthenticated()">
+				<li style="float:right"><a href="/login">Login</a></li>
+				<li style="float:right"><a href="/book/registeruser">Register</a></li>
+			</ul>
+			
+			<body>
+			</body>
+		</body>
+	</html>
