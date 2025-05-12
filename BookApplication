@@ -1,3 +1,9 @@
+CRUD Operations and Security operations using Spring Boot
+
+Install JDK (Java Development Kit). Java version should be above 17.
+Install MySQL (Install Community version).
+Install Postman Application.
+
 Create your Workspace folder
 	D drive
 	create folder by your name
@@ -313,10 +319,10 @@ public class BookListRepository implements BookCRUD<Book,Long> {
 	private List<Book> books;
 	public BookListRepository() {
 		books = new ArrayList<Book>(Arrays.asList(
-				new Book(1L,"Java Core","Murgan",650.5),
-				new Book(2L,"JSP","Sivan",750.5),
-				new Book(3L,"Spring Boot","Raman",950.5),
-				new Book(4L,"Hibernate","Saraswathi",850.5)));
+				new Book(1L,"Java Core","Prashant",650.5),
+				new Book(2L,"JSP","Ashwini",750.5),
+				new Book(3L,"Spring Boot","Sakshi",950.5),
+				new Book(4L,"Angular","Harsha",850.5)));
 	}
 	Import classes 
 		import java.util.List;
